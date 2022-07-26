@@ -23,4 +23,4 @@ pnpm run dev
 pnpm run build
 ```
 
-[BTG Communication]: https://www.btg-ommunication.fr/
+[BTG Communication]: https://www.btg-communication.fr/
