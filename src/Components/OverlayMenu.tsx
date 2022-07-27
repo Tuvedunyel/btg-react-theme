@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 type MenuObject = {
     ID: number,
@@ -12,28 +12,49 @@ type MenuObject = {
     classes: string[]
     menu_item_parent: string
 }
-type Menu = [ MenuObject ];
+type Menu = MenuObject[];
+
+const OverlaySubMenu: FC<{ menuItem: MenuObject, subMenu: Menu | null }> = ( { menuItem, subMenu } ) => {
+    const [ openSubMenu, setOpenSubMenu ] = useState( false );
+
+    return (
+        <>
+            <p onClick={ () => setOpenSubMenu( !openSubMenu ) }>{ menuItem.title }</p>
+            { openSubMenu && (
+                <ul className="subMenu">
+                    { subMenu && subMenu.map( ( menuItem: MenuObject ) => (
+                        <li key={ menuItem.ID }>
+                            { menuItem.title }
+                        </li>
+                    ) ) }
+                </ul>
+            ) }
+        </>
+    )
+}
 
 const OverlayMenu: FC = () => {
-    const [ menuData, setMenuData ] = useState<Menu | null>( null )
-    const [mainMenu, setMainMenu] = useState<Menu | null>(null)
-    const [subMenu, setSubMenu] = useState<Menu | null>(null)
+    const [ mainMenu, setMainMenu ] = useState<Menu | null>( null )
+    const [ subMenu, setSubMenu ] = useState<Menu | null>( null )
 
     const handleData = async () => {
-        await axios.get( "https://btg-communication.fr/wp-json/better-rest-endpoints/v1/menus/principal" ).then( res => {
-            let tempMainMenu = [];
-            let tempSubMenu = [];
-            res.data.map( (item: MenuObject) => {
-                if( item.menu_item_parent.length < 1 ) {
-                    tempMainMenu.push(item)
+        let tempMainMenu: Menu = [];
+        let tempSubMenu: Menu = [];
+        await axios.get( "https://btg-communication.fr/wp-json/better-rest-endpoints/v1/menus/principal" ).then( ( res: AxiosResponse<Menu> ) => {
+
+            res.data.map( ( item: MenuObject ) => {
+                if (Number( item.menu_item_parent ) !== 941) {
+                    tempMainMenu.push( item )
                 } else {
-                    tempSubMenu.push(item)
+                    tempSubMenu.push( item )
                 }
             } )
         } )
+        setMainMenu( tempMainMenu );
+        setSubMenu( tempSubMenu );
     }
 
-    useEffect(  () => {
+    useEffect( () => {
         handleData()
     }, [] )
 
@@ -43,9 +64,13 @@ const OverlayMenu: FC = () => {
                 <div className="list-nav">
                     <nav>
                         <ul className="menu-principal">
-                            { menuData && menuData.map( menuItem => (
+                            { mainMenu && mainMenu.map( menuItem => (
                                     <li key={ menuItem.ID } className="menu-item">
-                                        { menuItem.title }
+                                        { menuItem.url !== "#" ?
+                                            menuItem.title
+                                            : (
+                                                <OverlaySubMenu menuItem={ menuItem } subMenu={ subMenu }/>
+                                            ) }
                                     </li>
                                 )
                             ) }
