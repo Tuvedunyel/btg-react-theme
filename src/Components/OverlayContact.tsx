@@ -1,11 +1,34 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import './OverlayContact.scss';
 import facebookDegrade from './../assets/facebook-degrade.svg';
 import twitterDegrade from './../assets/twitter-degrade.svg'
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
+import { motion, useAnimation } from "framer-motion";
 
 const OverlayContact: FC = () => {
+    const openContact = useSelector( (state: RootState) => state.contact.isOpenContact )
+    const animation = useAnimation();
+
+    const contactVariants = {
+        initial: {
+            translateX: '-100%'
+        },
+        animate: {
+            translateX: 0
+        }
+    }
+
+    useEffect( () => {
+        if (openContact) {
+            animation.start('animate')
+        } else {
+            animation.start('initial')
+        }
+    }, [openContact])
+
     return (
-        <div className='overlay-contact'>
+        <motion.div initial="initial" animate={animation} variants={contactVariants} transition={{ duration: 0.4, ease: "linear" }} className='overlay-contact'>
             <div className="content">
                 <div className="socials">
                     <a href="https://www.facebook.com/btg.communication/" target="_blank" >
@@ -38,7 +61,7 @@ const OverlayContact: FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

@@ -2,12 +2,13 @@ import { FC, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from "axios";
 import './OverlayMenu.scss';
 import yellowWave from '../assets/wave-yellow.gif'
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import { useDispatch, useSelector } from "react-redux";
 import { motion, useAnimation } from "framer-motion";
 import  contactDegrade from '../assets/contact-degrade.svg';
 import  facebookDegrade from '../assets/facebook-degrade.svg';
 import  linkedinDegrade from '../assets/linkedin-degrade.svg';
+import { setSubMenu } from '../features/subMenu.slice';
+import { RootState } from "../app/store";
 
 type MenuObject = {
     ID: number,
@@ -44,8 +45,9 @@ const OverlaySubMenu: FC<{ menuItem: MenuObject, subMenu: Menu | null }> = ( { m
 
 const OverlayMenu: FC = () => {
     const [ mainMenu, setMainMenu ] = useState<Menu | null>( null )
-    const [ subMenu, setSubMenu ] = useState<Menu | null>( null )
     const openMenu = useSelector( ( state: RootState ) => state.menu.isOpen );
+    const subMenu = useSelector( (state: RootState) => state.subMenu.subMenu )
+    const dispatch = useDispatch();
     const animation = useAnimation();
 
     const handleData = async () => {
@@ -62,6 +64,7 @@ const OverlayMenu: FC = () => {
             } )
         } )
         setMainMenu( tempMainMenu );
+        dispatch( setSubMenu(tempSubMenu) )
         setSubMenu( tempSubMenu );
     }
 
