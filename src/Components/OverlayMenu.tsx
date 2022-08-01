@@ -1,5 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from "axios";
+import './OverlayMenu.scss';
+import yellowWave from '../assets/wave-yellow.gif'
 
 type MenuObject = {
     ID: number,
@@ -23,7 +25,7 @@ const OverlaySubMenu: FC<{ menuItem: MenuObject, subMenu: Menu | null }> = ( { m
             { openSubMenu && (
                 <ul className="subMenu">
                     { subMenu && subMenu.map( ( menuItem: MenuObject ) => (
-                        <li key={ menuItem.ID }>
+                        <li key={ menuItem.ID } className='subMenu-item' >
                             { menuItem.title }
                         </li>
                     ) ) }
@@ -62,8 +64,11 @@ const OverlayMenu: FC = () => {
         <div id="overlay-menu">
             <div className="content">
                 <div className="list-nav">
+                    <div className="vague">
+                        <img src={ yellowWave } alt="Vague Jaune"/>
+                    </div>
                     <nav>
-                        <ul className="menu-principal">
+                        <ul className="main-menu">
                             { mainMenu && mainMenu.map( menuItem => (
                                     <li key={ menuItem.ID } className="menu-item">
                                         { menuItem.url !== "#" ?
