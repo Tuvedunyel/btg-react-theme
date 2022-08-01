@@ -5,18 +5,23 @@ import closeMenu from '../assets/close-menu.svg';
 import contact from '../assets/contact.svg';
 import closeContact from '../assets/close-contact.svg';
 import './Header.scss';
+import { useDispatch, useSelector } from "react-redux";
+import { setIsOpen } from "../features/menu.slice";
+import { RootState } from "../app/store";
+import { setContactIsOpen } from "../features/contact.slice";
 
 const Header: FC = () => {
-    const [ openMenu, setOpenMenu ] = useState( false );
-    const [openContact, setOpenContact] = useState(false);
+    const openMenu = useSelector((state: RootState) => state.menu.isOpen);
+    const openContact = useSelector((state: RootState) => state.contact.isOpenContact);
+    const dispatch = useDispatch();
 
     const handleClick = (typeVariables: string) => {
         if ( typeVariables === 'menu' ) {
-            setOpenContact(false)
-            setOpenMenu( !openMenu );
+            dispatch(setContactIsOpen(false))
+            dispatch(setIsOpen(!openMenu))
         } else if ( typeVariables === 'contact' ) {
-            setOpenMenu(false)
-            setOpenContact( !openContact );
+            dispatch( setIsOpen( false ) )
+            dispatch( setContactIsOpen( !openContact ) )
         }
     }
 

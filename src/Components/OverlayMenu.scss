@@ -74,3 +74,27 @@
     color: #9d9d9d;
   }
 }
+
+.submenu-text {
+  display: block;
+  position: relative;
+
+  &::before {
+    pointer-events: all;
+    content: "";
+    width: 40px;
+    height: 40px;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 5px;
+  }
+
+  &.open-submenu::before {
+    background: url('../assets/show-more.svg') no-repeat;
+  }
+
+  &.close-submenu::before {
+    background: url('../assets/close.svg') no-repeat;
+  }
+}

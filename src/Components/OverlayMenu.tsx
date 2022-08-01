@@ -2,6 +2,9 @@ import { FC, useEffect, useState } from 'react';
 import axios, { AxiosResponse } from "axios";
 import './OverlayMenu.scss';
 import yellowWave from '../assets/wave-yellow.gif'
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
+import { motion, useAnimation } from "framer-motion";
 
 type MenuObject = {
     ID: number,
@@ -21,11 +24,12 @@ const OverlaySubMenu: FC<{ menuItem: MenuObject, subMenu: Menu | null }> = ( { m
 
     return (
         <>
-            <p onClick={ () => setOpenSubMenu( !openSubMenu ) }>{ menuItem.title }</p>
+            <p onClick={ () => setOpenSubMenu( !openSubMenu ) } className={ openSubMenu ? ' submenu-text' +
+                ' close-submenu' : ' submenu-text open-submenu' }>{ menuItem.title }</p>
             { openSubMenu && (
                 <ul className="subMenu">
                     { subMenu && subMenu.map( ( menuItem: MenuObject ) => (
-                        <li key={ menuItem.ID } className='subMenu-item' >
+                        <li key={ menuItem.ID } className='subMenu-item'>
                             { menuItem.title }
                         </li>
                     ) ) }
@@ -38,6 +42,8 @@ const OverlaySubMenu: FC<{ menuItem: MenuObject, subMenu: Menu | null }> = ( { m
 const OverlayMenu: FC = () => {
     const [ mainMenu, setMainMenu ] = useState<Menu | null>( null )
     const [ subMenu, setSubMenu ] = useState<Menu | null>( null )
+    const openMenu = useSelector( ( state: RootState ) => state.menu.isOpen );
+    const animation = useAnimation();
 
     const handleData = async () => {
         let tempMainMenu: Menu = [];
@@ -56,12 +62,29 @@ const OverlayMenu: FC = () => {
         setSubMenu( tempSubMenu );
     }
 
+    const openMenuVariants = {
+        initial: {
+            translateX: '100%'
+        },
+        animate: {
+            translateX: 0
+        }
+    }
+
+    useEffect( () => {
+        if ( openMenu ) {
+            animation.start( 'animate' )
+        } else {
+            animation.start( 'initial' )
+        }
+    }, [openMenu] )
+
     useEffect( () => {
         handleData()
     }, [] )
 
     return (
-        <div id="overlay-menu">
+        <motion.div initial='initial' animate={animation} variants={openMenuVariants} transition={{ delay: 0.4 }} id="overlay-menu">
             <div className="content">
                 <div className="list-nav">
                     <div className="vague">
@@ -84,7 +107,7 @@ const OverlayMenu: FC = () => {
                 </div>
                 <div className="logo-list"></div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
