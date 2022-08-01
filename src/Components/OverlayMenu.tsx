@@ -5,6 +5,9 @@ import yellowWave from '../assets/wave-yellow.gif'
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { motion, useAnimation } from "framer-motion";
+import  contactDegrade from '../assets/contact-degrade.svg';
+import  facebookDegrade from '../assets/facebook-degrade.svg';
+import  linkedinDegrade from '../assets/linkedin-degrade.svg';
 
 type MenuObject = {
     ID: number,
@@ -72,19 +75,20 @@ const OverlayMenu: FC = () => {
     }
 
     useEffect( () => {
-        if ( openMenu ) {
+        if (openMenu) {
             animation.start( 'animate' )
         } else {
             animation.start( 'initial' )
         }
-    }, [openMenu] )
+    }, [ openMenu ] )
 
     useEffect( () => {
         handleData()
     }, [] )
 
     return (
-        <motion.div initial='initial' animate={animation} variants={openMenuVariants} transition={{ delay: 0.4 }} id="overlay-menu">
+        <motion.div initial='initial' animate={ animation } variants={ openMenuVariants }
+                    transition={ { duration: 0.4, ease: "linear" } } id="overlay-menu">
             <div className="content">
                 <div className="list-nav">
                     <div className="vague">
@@ -105,7 +109,17 @@ const OverlayMenu: FC = () => {
                         </ul>
                     </nav>
                 </div>
-                <div className="logo-list"></div>
+                <div className="logo-list">
+                    <a href="mailto:contact@btg-communication.fr">
+                        <img src={ contactDegrade } alt="Contactez-nous"/>
+                    </a>
+                    <a href="https://www.facebook.com/btg.communication/" target="_blank">
+                        <img src={ facebookDegrade } alt="Notre facebook"/>
+                    </a>
+                    <a href="https://www.linkedin.com/company/btg-communication/" target="_blank">
+                        <img src={ linkedinDegrade } alt="Notre linkedin"/>
+                    </a>
+                </div>
             </div>
         </motion.div>
     );
