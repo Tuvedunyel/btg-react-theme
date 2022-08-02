@@ -8,6 +8,7 @@ import  contactDegrade from '../assets/contact-degrade.svg';
 import  facebookDegrade from '../assets/facebook-degrade.svg';
 import  linkedinDegrade from '../assets/linkedin-degrade.svg';
 import { setSubMenu } from '../features/subMenu.slice';
+import { setMainMenu } from '../features/mainMenu.slice';
 import { RootState } from "../app/store";
 
 type MenuObject = {
@@ -44,7 +45,7 @@ const OverlaySubMenu: FC<{ menuItem: MenuObject, subMenu: Menu | null }> = ( { m
 }
 
 const OverlayMenu: FC = () => {
-    const [ mainMenu, setMainMenu ] = useState<Menu | null>( null )
+    const mainMenu = useSelector( (state: RootState) => state.mainMenu.mainMenu )
     const openMenu = useSelector( ( state: RootState ) => state.menu.isOpen );
     const subMenu = useSelector( (state: RootState) => state.subMenu.subMenu )
     const dispatch = useDispatch();
@@ -63,9 +64,8 @@ const OverlayMenu: FC = () => {
                 }
             } )
         } )
-        setMainMenu( tempMainMenu );
+        dispatch( setMainMenu( tempMainMenu ) )
         dispatch( setSubMenu(tempSubMenu) )
-        setSubMenu( tempSubMenu );
     }
 
     const openMenuVariants = {
