@@ -55,7 +55,8 @@ const OverlayContact: FC = () => {
                             </div>
                             <textarea name="message" id="message" placeholder='Votre message'></textarea>
                             <div className="envoi">
-                                <input type="submit" value="Envoyer"/>
+                                {/*<input type="submit" value="Envoyer"/>*/}
+                                <button>Envoyer</button>
                             </div>
                         </form>
                     </div>

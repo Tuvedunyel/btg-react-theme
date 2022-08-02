@@ -14,6 +14,37 @@ const Home: FC = () => {
     const mainMenu = useSelector( ( state: RootState ) => state.mainMenu.mainMenu )
     const baseUrl = "https://btg-communication.fr/"
     const [ data, setData ] = useState<dataType | null>( null )
+    const [ x, setX ] = useState( 0 );
+    const [ y, setY ] = useState( 1 );
+
+    const handlePrev = () => {
+        if (data) {
+            if (x > 0) {
+                setX( x - 1 )
+                setY( y - 1 )
+            } else {
+                setX( data.acf.slide.length - 1 )
+                setY( data.acf.slide.length )
+            }
+        }
+    }
+
+    const handleNext = () => {
+        if (data) {
+            if (y < data.acf.slide.length) {
+                setX( x + 1 )
+                setY( y + 1 )
+            } else {
+                setX( 0 )
+                setY( 1 )
+            }
+        }
+    }
+
+    const handleBullet = ( index: number ) => {
+        setX(index)
+        setY(index + 1)
+    }
 
     useEffect( () => {
         if (mainMenu) {
@@ -49,6 +80,33 @@ const Home: FC = () => {
                     <h1>{ data?.title }</h1>
                 </div>
             </header>
+            <section id="acc-projet">
+                <div className="container">
+                    <h2 className="reversed flipped no-transition">
+                        Projets
+                    </h2>
+                    <div className="slider-container">
+                        <div className="slider">
+                            <ul>
+                                { data?.acf.slide.slice( x, y ).map( slide => (
+                                    <li key={ slide.image.id }>
+                                        <img src={ slide.image.url } alt={ slide.image.alt }/>
+                                    </li>
+                                ) ) }
+                            </ul>
+                        </div>
+                        <div className="controls">
+                            <button className="prev" onClick={ handlePrev }>Prev</button>
+                            <div className="bullets">
+                                { data?.acf.slide.map( ( slideBullet, key ) => (
+                                    <button key={ key } className="bullet" onClick={ () => handleBullet(key) } >bullet</button>
+                                ) ) }
+                            </div>
+                            <button className="next" onClick={ handleNext }>Next</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <OverlayMenu/>
             <OverlayContact/>
         </>
